@@ -14,9 +14,9 @@ class Field:
             Initialize a Pulse instance.
 
             Parameters:
-            duration (float): The duration of the pulse.
-            amplitude (float): The amplitude of the pulse.
-            frequency (float): The frequency of the pulse.
+            duration (float): The duration of the pulse in ???
+            amplitude (float): The amplitude of the pulse in ???
+            frequency (float): The frequency of the pulse in a. u.
             phase (float): The phase of the pulse.
             """
             self.tau = duration  # Duration of the pulse
@@ -29,7 +29,7 @@ class Field:
             Calculate the pulse value at a given time.
 
             Parameters:
-            time (float): The time at which to evaluate the pulse.
+            time (float): The time at which to evaluate the pulse in a. u.
             Type (str): The type of the pulse component to return ('Real', 'Imag', or 'Abs').
 
             Returns:
@@ -63,9 +63,9 @@ class Field:
             Initialize a MultiPulse instance.
 
             Parameters:
-            durations (list of float): The durations of the pulses.
-            amplitudes (list of float): The amplitudes of the pulses.
-            frequencies (list of float): The frequencies of the pulses.
+            durations (list of float): The durations of the pulses in ???
+            amplitudes (list of float): The amplitudes of the pulses in ???
+            frequencies (list of float): The frequencies of the pulses in a.u
             phases (list of float): The phases of the pulses.
             """
             if phases is None:
@@ -77,7 +77,7 @@ class Field:
             Calculate the combined pulse value at a given time.
 
             Parameters:
-            time (float): The time at which to evaluate the combined pulse.
+            time (float): The time at which to evaluate the combined pulse in ???
             Type (str): The type of the pulse component to return ('Real', 'Imag', or 'Abs').
 
             Returns:
