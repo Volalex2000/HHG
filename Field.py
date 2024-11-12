@@ -35,6 +35,8 @@ class Field:
             Returns:
             float: The value of the pulse at the given time.
             """
+            if Type == 'All':
+                return self.a * np.exp(-4 * np.log(2) * time**2 / self.tau**2) * (np.cos(self.w * time + self.phi) + 1j * np.sin(self.w * time + self.phi))
             if Type == 'Real':
                 return self.a * np.exp(-4 * np.log(2) * time**2 / self.tau**2) * np.cos(self.w * time + self.phi)
             if Type == 'Imag':
