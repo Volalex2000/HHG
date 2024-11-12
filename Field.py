@@ -56,7 +56,7 @@ class Field:
         """
         MultiPulse class representing a combination of multiple pulses.
         """
-        def __init__(self, durations, amplitudes, frequencies, phases):
+        def __init__(self, durations, amplitudes, frequencies, phases=None):
             """
             Initialize a MultiPulse instance.
 
@@ -66,6 +66,8 @@ class Field:
             frequencies (list of float): The frequencies of the pulses.
             phases (list of float): The phases of the pulses.
             """
+            if phases is None:
+                phases = [0] * len(durations)
             self.pulses = [Field.Pulse(duration, amplitude, frequency, phase) for duration, amplitude, frequency, phase in zip(durations, amplitudes, frequencies, phases)]
         
         def __call__(self, time, Type='Real'):
