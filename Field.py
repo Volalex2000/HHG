@@ -24,7 +24,7 @@ class Field:
             self.w = frequency  # Frequency of the pulse
             self.phi = phase  # Phase of the pulse
         
-        def __call__(self, time, Type='Real'):
+        def __call__(self, time, Type='All'):
             """
             Calculate the pulse value at a given time.
 
