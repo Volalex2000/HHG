@@ -39,6 +39,16 @@ class Field:
                 return self.a * np.exp(-4 * np.log(2) * time**2 / self.tau**2) * np.sin(self.w * time)
             if Type == 'Abs':
                 return self.a * np.exp(-4 * np.log(2) * time**2 / self.tau**2)
+        
+        def get_pulse_parameters(self):
+            """
+            Get the parameters of the pulse.
+
+            Returns:
+            dict: A dictionary containing the parameters of the pulse.
+            """
+            return {'duration': self.tau, 'amplitude': self.a, 'frequency': self.w}
+
 
     class MultiPulse:
         """
@@ -72,3 +82,12 @@ class Field:
                 return sum(pulse(time, Type) for pulse in self.pulses)
             if Type == 'Abs':
                 return sum(pulse(time, Type) for pulse in self.pulses)
+            
+        def get_pulses_parameters(self):
+            """
+            Get the parameters of all pulses.
+
+            Returns:
+            list of dict: A list of dictionaries containing the parameters of each pulse.
+            """
+            return [{'duration': pulse.tau, 'amplitude': pulse.a, 'frequency': pulse.w} for pulse in self.pulses]
