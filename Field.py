@@ -29,11 +29,11 @@ class Field:
             Calculate the pulse value at a given time.
 
             Parameters:
-            time (float): The time at which to evaluate the pulse in a. u.
+            time (np.array): The time at which to evaluate the pulse in a. u.
             Type (str): The type of the pulse component to return ('Real', 'Imag', or 'Abs').
 
             Returns:
-            float: The value of the pulse at the given time.
+            np.array: The value of the pulse at the given time.
             """
             if Type == 'All':
                 return self.a * np.exp(-4 * np.log(2) * time**2 / self.tau**2) * (np.cos(self.w * time + self.phi) + 1j * np.sin(self.w * time + self.phi))
@@ -63,10 +63,10 @@ class Field:
             Initialize a MultiPulse instance.
 
             Parameters:
-            durations (list of float): The durations of the pulses in ???
-            amplitudes (list of float): The amplitudes of the pulses in ???
-            frequencies (list of float): The frequencies of the pulses in a.u
-            phases (list of float): The phases of the pulses.
+            durations (np.array): The durations of the pulses in ???
+            amplitudes (np.array): The amplitudes of the pulses in ???
+            frequencies (np.array): The frequencies of the pulses in a.u
+            phases (np.array): The phases of the pulses.
             """
             if phases is None:
                 phases = [0] * len(durations)
@@ -77,11 +77,11 @@ class Field:
             Calculate the combined pulse value at a given time.
 
             Parameters:
-            time (float): The time at which to evaluate the combined pulse in ???
+            time (np.array): The time at which to evaluate the combined pulse in ???
             Type (str): The type of the pulse component to return ('Real', 'Imag', or 'Abs').
 
             Returns:
-            float: The value of the combined pulse at the given time.
+            np.array: The value of the combined pulse at the given time.
             """
             if Type == 'Real':
                 return sum(pulse(time, Type) for pulse in self.pulses)
