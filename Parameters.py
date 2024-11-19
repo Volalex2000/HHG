@@ -1,3 +1,5 @@
+import numpy as np
+
 def pars_YanPengPhysRevA_78_033821():
     return np.array([
         [ 
