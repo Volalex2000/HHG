@@ -34,7 +34,7 @@ class Hydrogen:
         Returns:
         np.array: The value of the potential at the given distance.
         """
-        return -self.q / (np.abs(x) + 1e-10) # a. u.
+        return -self.q / (np.abs(x) + 1e-6) # a. u.
     
     def soft_core_potential(self, x):
         """
