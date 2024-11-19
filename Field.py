@@ -9,20 +9,20 @@ class Field:
         """
         Pulse class representing a single pulse with Gaussian envelope.
         """
-        def __init__(self, duration, amplitude, frequency, phase=0):
+        def __init__(self, parameters):
             """
             Initialize a Pulse instance.
 
-            Parameters:
+            Parameters: np.array of 
             duration (float): The duration of the pulse in ???
             amplitude (float): The amplitude of the pulse in ???
             frequency (float): The frequency of the pulse in a. u.
             phase (float): The phase of the pulse.
             """
-            self.tau = duration  # Duration of the pulse
-            self.a = amplitude  # Amplitude of the pulse
-            self.w = frequency  # Frequency of the pulse
-            self.phi = phase  # Phase of the pulse
+            self.tau = parameters[0]  # Duration of the pulse
+            self.a = parameters[1]  # Amplitude of the pulse
+            self.w = parameters[2]  # Frequency of the pulse
+            self.phi = parameters[3]  # Phase of the pulse
         
         def __call__(self, time, Type='All'):
             """
@@ -58,19 +58,18 @@ class Field:
         """
         MultiPulse class representing a combination of multiple pulses.
         """
-        def __init__(self, durations, amplitudes, frequencies, phases=None):
+        def __init__(self, parameters):
             """
             Initialize a MultiPulse instance.
 
-            Parameters:
+            Parameters: np.array of list of
             durations (np.array): The durations of the pulses in ???
             amplitudes (np.array): The amplitudes of the pulses in ???
             frequencies (np.array): The frequencies of the pulses in a.u
             phases (np.array): The phases of the pulses.
             """
-            if phases is None:
-                phases = [0] * len(durations)
-            self.pulses = [Field.Pulse(duration, amplitude, frequency, phase) for duration, amplitude, frequency, phase in zip(durations, amplitudes, frequencies, phases)]
+
+            self.pulses = [Field.Pulse(params) for params in parameters]
         
         def __call__(self, time, Type='Real'):
             """
