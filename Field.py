@@ -62,11 +62,11 @@ class Field:
             """
             Initialize a MultiPulse instance.
 
-            Parameters: np.array of list of
-            durations (np.array): The durations of the pulses in ???
-            amplitudes (np.array): The amplitudes of the pulses in ???
-            frequencies (np.array): The frequencies of the pulses in a.u
-            phases (np.array): The phases of the pulses.
+            Parameters: list of lists
+            durations (list): The durations of the pulses in ???
+            amplitudes (list): The amplitudes of the pulses in ???
+            frequencies (list): The frequencies of the pulses in a.u
+            phases (list): The phases of the pulses.
             """
 
             self.pulses = [Field.Pulse(params) for params in parameters]
