@@ -68,4 +68,4 @@ class Hydrogen:
         np.array: The value of the wavefunction at the given distance.
         """
         a = 1 / self.q # Bohr radius i a. u. (1 a. u. = 1 Bohr radius for q=1)
-        return 1/np.sqrt(a) * np.exp(-np.abs(x) / a)
+        return 1/np.sqrt(a) * np.exp(-np.abs(x) / a) # a. u.
