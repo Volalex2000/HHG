@@ -1,6 +1,5 @@
-import numpy as np
 def pars_YanPengPhysRevA_78_033821():
-    return np.array([
+    return [
         [ 
             206.8, # Durations, a. u.
             0.00997, # Amplitudes, a. u. 
@@ -35,4 +34,4 @@ def pars_YanPengPhysRevA_78_033821():
             [0.057, 0.114, 0.171], # Frequencies, a. u.
             [0, 0, 0] # Phases, rad
         ]
-    ])
+    ]
