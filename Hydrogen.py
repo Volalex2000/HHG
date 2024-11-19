@@ -21,7 +21,7 @@ class Hydrogen:
         Returns:
         float: The energy of the Hydrogen atom for the given principal quantum number.
         """
-        return -13.6 * self.q**2 / n**2 # eV
+        return 0.5 * self.q**2 / n**2 # a. u.
     
     def potential(self, x):
         """
@@ -34,7 +34,7 @@ class Hydrogen:
         Returns:
         np.array: The value of the potential at the given distance.
         """
-        return -self.q / (np.abs(x) + 1e-10) # eV
+        return -self.q / (np.abs(x) + 1e-10) # a. u.
     
     def soft_core_potential(self, x):
         """
@@ -47,7 +47,7 @@ class Hydrogen:
         Returns:
         np.array: The value of the potential at the given distance.
         """
-        return -self.q / np.sqrt(2 + x**2) # eV
+        return -self.q / np.sqrt(2 + x**2) # a. u.
     
     def ground_state_energy(self):
         """
@@ -67,5 +67,5 @@ class Hydrogen:
         Returns:
         np.array: The value of the wavefunction at the given distance.
         """
-        a = 0.529 / self.q # Bohr radius in angstrom
+        a = 1 / self.q # Bohr radius i a. u. (1 a. u. = 1 Bohr radius for q=1)
         return 1/np.sqrt(a) * np.exp(-np.abs(x) / a)
