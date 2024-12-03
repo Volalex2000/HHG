@@ -23,7 +23,7 @@ class Hydrogen:
         """
         return 0.5 * self.q**2 / n**2 # a. u.
     
-    def potential(self, x ,eps= 1e-4):
+    def potential(self, x ,eps= 1e-3):
         """
         Calculate the electrostatic potential.
         The potential is given in electron volts (eV).
