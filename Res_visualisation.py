@@ -6,15 +6,17 @@ import pywt
 
 def __out_signal_calculation(x, wavefunction, potential, field):
     dV_dx = np.gradient(potential)
-    a = np.trapz(-wavefunction * dV_dx * np.conj(wavefunction), x, axis=0) + field
+    a = np.trapz(-wavefunction * dV_dx[np.newaxis,:] * np.conj(wavefunction), x[np.newaxis,:], axis=1) + field
     a = np.real(a + field)
     return a  # a. u.
 
 def __wavelet_transform(a, FW_frequency, t0=0, tau=620.35, max_harm_order=100):
-    scales = np.linspace(0, max_harm_order, 2 * max_harm_order)
-    wavelet = pywt.ContinuousWavelet(f"cmor{tau:.3f}-{t0:.3f}")
+    scales = np.linspace(1, max_harm_order, 2 * max_harm_order)
+    B = 2 * tau**2 / FW_frequency**2
+    C = FW_frequency / (2 * np.pi)
+    wavelet = pywt.ContinuousWavelet(f"cmor{B:.3f}-{C:.3f}")
     sampling_period = 2 * np.pi / FW_frequency
-    A, frequencies = pywt.cwt(a, scales, wavelet, sampling_period)
+    A, frequencies = pywt.cwt(np.sqrt(2*np.pi) * a, scales, wavelet, sampling_period)
     return A, frequencies
 
 def __calculate_cutoff(E, W, Z):
@@ -40,8 +42,9 @@ def plot_HH_spectrum(x, wavefunction, parameters, potential, field, Z):
     a = __out_signal_calculation(x, wavefunction, potential, field)
     FW_frequency = np.min(parameters[2])
     A, frequencies = __wavelet_transform(a, FW_frequency)
+    print(frequencies)
     plt.figure()
-    plt.plot(frequencies, np.log2(A))
+    plt.plot(frequencies, np.log2(np.abs(A[:,0])))
     cutoff = __calculate_cutoff(parameters[1], parameters[2], Z)
     plt.axvline(x=cutoff / FW_frequency, color='r', linestyle='--', label=f'Cutoff: {cutoff:.2f}')
     plt.legend()
@@ -67,7 +70,7 @@ def imshow_time_frequency_characteristics(x, wavefunction, parameters, potential
     a = __out_signal_calculation(x, wavefunction, potential, field)
     A, frequencies = __wavelet_transform(a, np.min(parameters[2]))
     plt.figure()
-    plt.imshow(np.log2(A), aspect='auto', extent=[0, len(wavefunction), np.min(frequencies), np.max(frequencies)])
+    plt.imshow(np.log2(np.abs(A)), aspect='auto', extent=[0, len(wavefunction), np.min(frequencies), np.max(frequencies)])
     plt.xlabel('Time, a. u.')
     plt.ylabel('Frequency, harmonic order')
     plt.title('Time-Frequency characteristics')
