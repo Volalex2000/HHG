@@ -98,6 +98,8 @@ def psi():
     
     crank.set_parameter(f)
     psi_init = atom.ground_state_wavefunction(X)
+    
     crank.solve(psi_init)
     
-    return crank.psi_matrix
+    return crank.psi_matrix, crank.x_pts, crank.t_pts
+
