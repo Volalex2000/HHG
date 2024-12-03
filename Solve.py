@@ -7,7 +7,21 @@ from Parameters import *
 from Hydrogen import *
 from Field import *
 
+#Import des biblothèques utiles
+
+%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.sparse
+import scipy.linalg as la
+from time import process_time
+from Parameters import *
+from Hydrogen import *
+from Field import *
+from matplotlib.animation import FuncAnimation
+
 class CrankNicolson:
+
     
     def set_grid(self, x_min, x_max, n_x, t_min, t_max, n_t):
 
@@ -16,56 +30,108 @@ class CrankNicolson:
         self.x_pts, self.delta_x = np.linspace(x_min, x_max, n_x, retstep=True, endpoint=False)
         self.t_pts, self.delta_t = np.linspace(t_min, t_max, n_t, retstep=True, endpoint=False)
         
-    def set_parameter(self,f):
+    def set_parameters(self, f):
         
         self.f = f
-    
+
+    def solve(self, psi_init, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
+            
+        sig = (1j * self.delta_t) / (4 * self.delta_x**2)
+        
+        
+        # Figure the data type
+        data_type = type(sig*psi_init[0])
+        
+        self.psi_matrix = np.zeros([self.n_t, self.n_x], dtype=data_type)
+
+        # Using sparse matrices and specialized tridiagonal solver speeds up the calculations
+        if sparse:
+            
+            A = self._fillA_sp(sig, self.n_x, data_type)
+            B = self._fillB_sp(sig, self.n_x, data_type)
+            # Set boundary conditions
+            for b in [0,1]:
+                if boundary_conditions[b] == 'dirichlet':
+                    # u(x,t) = 0
+                    A[1,-b] = 1.0
+                    A[2*b,1-3*b] = 0.0
+                    B[-b,-b] = 0.0
+                    B[-b,1-3*b] = 0.0
+                elif boundary_conditions[b] == 'neumann':
+                    # u'(x,t) = 0
+                    A[2*b,1-3*b] = -2*sig
+                    B[-b,1-3*b] = 2*sig
+                    
+            # Propagate
+            psi = psi_init
+            for n in range(self.n_t):
+                t = self.t_min + n*self.delta_t
+                self.psi_matrix[n,:] = psi
+                fpsi = self.f(psi,t)
+                if n==0: fpsi_old = fpsi
+                psi = la.solve_banded((1,1),A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old),\
+                                    check_finite=False)
+                fpsi_old = fpsi
+
+        else:
+            
+            A = self._make_tridiag(sig, self.n_x, data_type)
+            B = self._make_tridiag(-sig, self.n_x, data_type)
+
+            # Set boundary conditions
+            for b in [0,1]:
+                if boundary_conditions[b] == 'dirichlet':
+                    # u(x,t) = 0
+                    A[-b,-b] = 1.0
+                    A[-b,1-3*b] = 0.0
+                    B[-b,-b] = 0.0
+                    B[-b,1-3*b] = 0.0
+                
+                elif boundary_conditions[b] == 'neumann':
+                    # u'(x,t) = 0
+                    A[-b,1-3*b] = -2*sig
+                    B[-b,1-3*b] = 2*sig
+
+            # Propagate
+            psi = psi_init
+            for n in range(self.n_t):
+                self.psi_matrix[n,:] = psi
+                fpsi = self.f(psi,t)
+                if n==0: fpsi_old = fpsi
+                psi = la.solve(A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old))
+                fpsi_old = fpsi
+            
+    def get_final_psi(self):
+        
+        return self.psi_matrix[-1,:].copy()
+        
     def _make_tridiag(self, sig, n, data_type):
-        
-        M = np.diagflat(np.full(n, (1+2*sig), dtype=data_type)) +\
-            np.diagflat(np.full(n-1, (-sig), dtype=data_type), 1) +\
-            np.diagflat(np.full(n-1, (-sig), dtype=data_type), -1)
-        
+    
+        M = np.diagflat(np.full(n, (1+2*sig), dtype=data_type)) + \
+            np.diagflat(np.full(n-1, -(sig), dtype=data_type), 1) + \
+            np.diagflat(np.full(n-1, -(sig), dtype=data_type), -1)
+
         return M
     
-    def solve(self, psi_init, sparse=True):
+    def _fillA_sp(self, sig, n, data_type):
+        """Returns a tridiagonal matrix in compact form ab[1+i-j,j]=a[i,j]"""
         
-        sig = (1j*self.delta_t)/(4*(self.delta_x)**2)
-        data_type = type(psi_init[0]*sig)
+        A = np.zeros([3,n], dtype=data_type) # A has three diagonals and size n
+        A[0] = -(sig) # superdiagonal
+        A[1] = 1+2*sig # diagonal
+        A[2] = -(sig) # subdiagonal
+        return A
+
+    def _fillB_sp(self, sig, n, data_type):
+        """Returns a tridiagonal sparse matrix in csr-form"""
         
-        self.psi_matrix = np.zeros([self.n_t, self.n_x],dtype=data_type)
-        
-        
-        A = self._make_tridiag(sig, self.n_x,data_type)
-        B = self._make_tridiag(-sig, self.n_x, data_type)
-        
-        for i in [0,1]:
-            A[1,-i] = 1.0
-            A[2*i,1-3*i] = 0.0
-            B[-i,-i] = 0.0
-            B[-i,1-3*i] = 0.0
-            
-        psi = psi_init
-        for k in range(self.n_t):
-            t1 = process_time()
-            t = self.t_min + k*self.delta_t
-            self.psi_matrix[k,:] = psi
-            fpsi = self.f(psi,t)
-            if k==0: fpsi_old = fpsi
-            psi = la.solve(A, B.dot(psi) - 1j* self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old))
-            
-            # Normalizing the wave function
-            norm = np.sqrt(np.sum(np.abs(psi)**2) * self.delta_x)
-            psi = psi / norm
-            
-            fpsi_old = fpsi
-            t2 = process_time()
-            print("Time for step ",k," : ",t2-t1)
-            
-        
+        _o = np.ones(n, dtype=data_type)
+        supdiag = (sig)*_o[:-1]
+        diag = (1-2*sig)*_o
+        subdiag = (sig)*_o[:-1]
+        return scipy.sparse.diags([supdiag, diag, subdiag], [1,0,-1], (n,n), format="csr")
     
-    def get_final_psi(self):
-        return self.psi_matrix[-1,:].copy()
+       
 
 
 def psi():
