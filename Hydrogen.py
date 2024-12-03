@@ -23,7 +23,7 @@ class Hydrogen:
         """
         return 0.5 * self.q**2 / n**2 # a. u.
     
-    def potential(self, x ,eps= 1e-4):
+    def potential(self, x ,eps= 1e-2):
         """
         Calculate the electrostatic potential.
         The potential is given in electron volts (eV).
@@ -34,7 +34,7 @@ class Hydrogen:
         Returns:
         np.array: The value of the potential at the given distance.
         """
-        return -self.q / (np.abs(x) + eps) # a. u.
+        return -self.q / np.sqrt(x**2 + eps**2) # a. u.
     
     def ground_state_energy(self):
         """
