@@ -14,9 +14,9 @@ class Field:
             Initialize a Pulse instance.
 
             Parameters: np.array of 
-            duration (float): The duration of the pulse in ???
-            amplitude (float): The amplitude of the pulse in ???
-            frequency (float): The frequency of the pulse in a. u.
+            duration (float): The duration of the pulse in a.u.
+            amplitude (float): The amplitude of the pulse in a.u.
+            frequency (float): The frequency of the pulse in a.u.
             phase (float): The phase of the pulse.
             """
             self.tau = parameters[0]  # Duration of the pulse
@@ -29,7 +29,7 @@ class Field:
             Calculate the pulse value at a given time.
 
             Parameters:
-            time (np.array): The time at which to evaluate the pulse in a. u.
+            time (np.array): The time at which to evaluate the pulse in a.u.
             Type (str): The type of the pulse component to return ('Real', 'Imag', or 'Abs').
 
             Returns:
@@ -63,9 +63,9 @@ class Field:
             Initialize a MultiPulse instance.
 
             Parameters: list of lists
-            durations (list): The durations of the pulses in ???
-            amplitudes (list): The amplitudes of the pulses in ???
-            frequencies (list): The frequencies of the pulses in a.u
+            durations (list): The durations of the pulses in a.u.
+            amplitudes (list): The amplitudes of the pulses in a.u.
+            frequencies (list): The frequencies of the pulses in a.u.
             phases (list): The phases of the pulses.
             """
 
@@ -76,7 +76,7 @@ class Field:
             Calculate the combined pulse value at a given time.
 
             Parameters:
-            time (np.array): The time at which to evaluate the combined pulse in ???
+            time (np.array): The time at which to evaluate the combined pulse in a.u.
             Type (str): The type of the pulse component to return ('Real', 'Imag', or 'Abs').
 
             Returns:
