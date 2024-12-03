@@ -1,5 +1,4 @@
 import numpy as np
-from Soft_core import sc_wavefunction, sc_potential
 
 class Hydrogen:
     def __init__(self, charge=1):
@@ -35,20 +34,7 @@ class Hydrogen:
         Returns:
         np.array: The value of the potential at the given distance.
         """
-        return -self.q / (np.abs(x) + 1e-6) # a. u.
-    
-    def soft_core_potential(self, x):
-        """
-        Calculate the soft-core electrostatic potential.
-        The potential is given in a. u.
-
-        Parameters:
-        x (np.array): The distance |x| from the nucleus.
-
-        Returns:
-        np.array: The value of the potential at the given distance.
-        """
-        return sc_potential(x)
+        return -self.q / (np.abs(x) + 1e-4) # a. u.
     
     def ground_state_energy(self):
         """
@@ -70,16 +56,3 @@ class Hydrogen:
         """
         a = 1 / self.q # Bohr radius i a. u. (1 a. u. = 1 Bohr radius for q=1)
         return 1/np.sqrt(a) * np.exp(-np.abs(x) / a) # a. u.s
-    
-    def soft_core_ground_state_wavefunction(self, x):
-        """
-        Calculate the soft-core groundstate wavefunction.
-        The wavefunction is given in arbitrary units.
-
-        Parameters:
-        x (np.array): The distance |x| from the nucleus.
-
-        Returns:
-        np.array: The value of the wavefunction at the given distance.
-        """
-        return sc_wavefunction(x, self.q)
