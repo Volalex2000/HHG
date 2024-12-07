@@ -9,7 +9,6 @@ from Field import *
 
 #Import des biblothèques utiles
 
-%matplotlib inline
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.sparse
@@ -31,7 +30,7 @@ class CrankNicolson:
         self.t_pts, self.delta_t = np.linspace(t_min, t_max, n_t, retstep=True, endpoint=False)
         
     def set_parameters(self, f):
-        
+
         self.f = f
 
     def solve(self, psi_init, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
@@ -162,7 +161,7 @@ def psi():
     def f(u, t):
         return Potentiel_test(X) * u - X * u * Field_test(t)
     
-    crank.set_parameter(f)
+    crank.set_parameters(f)
     psi_init = atom.ground_state_wavefunction(X)
     
     crank.solve(psi_init)
