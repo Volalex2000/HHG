@@ -133,7 +133,23 @@ class CrankNicolson:
        
 
 
-def psi():
+def psi(set_x_t = None):
+    """
+    Solves the time-dependent Schrödinger equation for a given potential and field using the Crank-Nicolson method.
+    Parameters:
+    set_x_t (tuple, optional): A tuple containing the grid and time parameters in the form (x_min, nx, t_min, nt).
+                                If None, default values based on the field parameters will be used.
+                                - x_min: Minimum value of the spatial grid.
+                                - nx: Number of spatial grid points.
+                                - t_min: Minimum value of the time grid.
+                                - nt: Number of time grid points.
+    Returns:
+    tuple: A tuple containing the following elements:
+            - psi_matrix (numpy.ndarray): The matrix of the wavefunction values at each grid point and time step.
+            - x_pts (numpy.ndarray): The spatial grid points.
+            - t_pts (numpy.ndarray): The time grid points.
+    """
+
     crank = CrankNicolson()
     
     # Def du champ laser simple
@@ -150,9 +166,17 @@ def psi():
         return atom.potential(x)
     
     # Those will not change
-    l = ((1 / (2 * Field_single_pulse.w)) ** 2) * 0.5 * Field_single_pulse.a
-    x_min, x_max, nx = -30 * l, 30 * l, 600
-    t_min, t_max, nt = -100, 100., 100
+    if set_x_t is None:
+        l = ((1 / (2 * Field_single_pulse.w)) ** 2) * 0.5 * Field_single_pulse.a
+        x_min, x_max, nx = -30 * l, 30 * l, 600
+        t_min, t_max, nt = -100, 100., 100
+    else:
+        x_min = set_x_t[0]
+        x_max = -set_x_t[0]
+        nx = set_x_t[1]
+        t_min = set_x_t[2]
+        t_max = -set_x_t[2]
+        nt = set_x_t[3]
     
     # Paramétrisation du solveur
     crank.set_grid(x_min, x_max, nx, t_min, t_max, nt)
