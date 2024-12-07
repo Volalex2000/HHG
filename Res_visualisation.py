@@ -2,22 +2,23 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pywt
 
 def __out_signal_calculation(x, wavefunction, potential, field):
-    dV_dx = np.gradient(potential)
-    a = np.trapz(-wavefunction * dV_dx[np.newaxis,:] * np.conj(wavefunction), x[np.newaxis,:], axis=1) + field
+    dV_dx = np.gradient(potential, x)
+    a = np.trapz(-wavefunction * dV_dx[np.newaxis,:] * np.conj(wavefunction), x[np.newaxis,:], axis=1)
     a = np.real(a + field)
     return a  # a. u.
 
-def __wavelet_transform(a, FW_frequency, t0=0, tau=620.35, max_harm_order=100):
-    scales = np.linspace(1, max_harm_order, 2 * max_harm_order)
-    B = 2 * tau**2 / FW_frequency**2
-    C = FW_frequency / (2 * np.pi)
-    wavelet = pywt.ContinuousWavelet(f"cmor{B:.3f}-{C:.3f}")
-    sampling_period = 2 * np.pi / FW_frequency
-    A, frequencies = pywt.cwt(np.sqrt(2*np.pi) * a, scales, wavelet, sampling_period)
-    return A, frequencies
+def __wavelet(w, t, tau):
+    X = w[np.newaxis,np.newaxis,:] * (t[:,np.newaxis,np.newaxis] - t[np.newaxis,:,np.newaxis])
+    return np.sqrt(w[np.newaxis,np.newaxis,:] / tau) * np.exp(-X**2 / (2 * tau**2) + 1j * X)
+
+def __wavelet_transform(a, t, FW_frequency, t0=0, tau=620.35, max_harm_order=100):
+    scales = FW_frequency * np.arange(1, max_harm_order)
+    Int = a[:,np.newaxis,np.newaxis] * __wavelet(scales, t, tau)
+    A = np.trapz(Int, t, axis=0)
+    print(A.shape, scales.shape)
+    return A, scales
 
 def __calculate_cutoff(E, W, Z):
     Up = np.sum(E**2 / W**2) / 4
@@ -25,7 +26,7 @@ def __calculate_cutoff(E, W, Z):
     Ip = Z**2 / 2  # for hydrogen-like atom
     return Ip + const * Up
 
-def plot_HH_spectrum(x, wavefunction, parameters, potential, field, Z):
+def plot_HH_spectrum(x, t, wavefunction, parameters, potential, field, Z):
     """
     Plots the High Harmonic (HH) spectrum of a given signal.
 
@@ -41,19 +42,19 @@ def plot_HH_spectrum(x, wavefunction, parameters, potential, field, Z):
     """
     a = __out_signal_calculation(x, wavefunction, potential, field)
     FW_frequency = np.min(parameters[2])
-    A, frequencies = __wavelet_transform(a, FW_frequency)
-    print(frequencies)
+    A, frequencies = __wavelet_transform(a, t, FW_frequency)
+    print(A)
     plt.figure()
-    plt.plot(frequencies, np.log2(np.abs(A[:,0])))
+    plt.plot(frequencies / FW_frequency, np.log2(np.abs(A[0,:])))
     cutoff = __calculate_cutoff(parameters[1], parameters[2], Z)
-    plt.axvline(x=cutoff / FW_frequency, color='r', linestyle='--', label=f'Cutoff: {cutoff:.2f}')
+    plt.axvline(x = cutoff / FW_frequency, color='r', linestyle='--', label=f'Cutoff: {cutoff:.2f}')
     plt.legend()
     plt.xlabel('Frequency, harmonic order')
     plt.ylabel('Log2(Amplitude)')
     plt.title('HH Spectrum')
     plt.show()
 
-def imshow_time_frequency_characteristics(x, wavefunction, parameters, potential, field):
+def imshow_time_frequency_characteristics(x, t, wavefunction, parameters, potential, field):
     """
     Display the time-frequency characteristics of a given signal using wavelet transform.
 
@@ -68,7 +69,8 @@ def imshow_time_frequency_characteristics(x, wavefunction, parameters, potential
         None: This function does not return any value. It displays a plot of the time-frequency characteristics.
     """
     a = __out_signal_calculation(x, wavefunction, potential, field)
-    A, frequencies = __wavelet_transform(a, np.min(parameters[2]))
+    FW_frequency = np.min(parameters[2])
+    A, frequencies = __wavelet_transform(a, t, FW_frequency)
     plt.figure()
     plt.imshow(np.log2(np.abs(A)), aspect='auto', extent=[0, len(wavefunction), np.min(frequencies), np.max(frequencies)])
     plt.xlabel('Time, a. u.')
