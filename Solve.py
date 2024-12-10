@@ -30,10 +30,22 @@ class CrankNicolson:
         self.t_pts, self.delta_t = np.linspace(t_min, t_max, n_t, retstep=True, endpoint=False)
         
     def set_parameters(self, f):
-
         self.f = f
 
-    def solve(self, psi_init, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
+    def out_signal_calculation(self, t, psi):
+        dV_dx = np.gradient(self.f(1, t), self.x_pts)
+        a = np.trapz(-psi * dV_dx[np.newaxis,:] * np.conj(psi), self.x_pts)
+        a = np.real(a)
+        return a
+
+    def wavelet_trasform(self, t, psi):
+        X = self.scales[np.newaxis,:] * (t - self.t_pts[:,np.newaxis])
+        wavelet = np.sqrt(self.scales[np.newaxis,:] / self.tau) * np.exp(-X**2 / (2 * tau**2) + 1j * X)
+        delta_A = self.out_signal_calculation(t, psi)[:,np.newaxis] * wavelet * self.delta_t
+        return delta_A
+    
+
+    def solve(self, psi_init, for_A_data, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
             
         sig = (1j * self.delta_t) / (4 * self.delta_x**2)
         
@@ -42,6 +54,13 @@ class CrankNicolson:
         data_type = type(sig*psi_init[0])
         
         self.psi_matrix = np.zeros([self.n_t, self.n_x], dtype=data_type)
+
+        # Init fot A
+        FW = for_A_data[0]
+        max_harm_order = for_A_data[1]
+        self.tau = for_A_data[2]
+        self.scales = FW * np.arange(1, max_harm_order)
+        self.A = np.zeros([self.n_t, len(self.scales)], dtype=data_type)
 
         # Using sparse matrices and specialized tridiagonal solver speeds up the calculations
         if sparse:
@@ -72,6 +91,9 @@ class CrankNicolson:
                                     check_finite=False)
                 fpsi_old = fpsi
 
+                # Calculate A
+                self.A += self.wavelet_trasform(t, psi)
+
         else:
             
             A = self._make_tridiag(sig, self.n_x, data_type)
@@ -99,7 +121,10 @@ class CrankNicolson:
                 if n==0: fpsi_old = fpsi
                 psi = la.solve(A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old))
                 fpsi_old = fpsi
-            
+
+                # Calculate A
+                self.A += self.wavelet_trasform(t, psi)
+
     def get_final_psi(self):
         
         return self.psi_matrix[-1,:].copy()
@@ -192,5 +217,5 @@ def psi(set_x_t = None):
     
     crank.solve(psi_init)
     
-    return crank.psi_matrix, crank.x_pts, crank.t_pts
+    return crank.psi_matrix, crank.x_pts, crank.t_pts, crank.A
 
