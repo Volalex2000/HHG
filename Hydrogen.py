@@ -1,6 +1,6 @@
 import numpy as np
 
-def abs_cos18_potential(x, l, alpha=0.1):
+def abs_cos18_potential(x, l, alpha=1):
     """
     Calculate the absorbing potential.
     Parameters:
