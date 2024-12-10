@@ -182,7 +182,7 @@ def psi(set_x_t = None):
     X = crank.x_pts
     
     def Potentiel_test(x):
-        return atom.potential(x) + abs_cos18_potential(x, x_max)
+        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=10)
     
     def f(u, t):
         return Potentiel_test(X) * u - X * u * Field_test(t)
