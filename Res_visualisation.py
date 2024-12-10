@@ -49,7 +49,7 @@ def plot_HH_spectrum(x, t, wavefunction, parameters, potential, field, Z):
     """
     a = __out_signal_calculation(x, wavefunction, potential, field)
     FW_frequency = np.min(parameters[2])
-    A, frequencies = __wavelet_transform(a, t, FW_frequency)
+    A, frequencies = __wavelet_transform(a, t, FW_frequency, fast=True)
     print(A)
     plt.figure()
     plt.plot(frequencies / FW_frequency, np.log2(np.abs(A[0,:])))

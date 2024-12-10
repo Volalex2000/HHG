@@ -1,7 +1,16 @@
 import numpy as np
 
 def abs_cos18_potential(x, l, alpha=0.1):
-    return 1j * alpha * (1 - np.pow(np.cos(np.pi * x/l), 1/8))
+    """
+    Calculate the absorbing potential.
+    Parameters:
+    x (float array-like): The input value(s) for which the potential is calculated.
+    l (float): coordinate limit of the grid.
+    alpha (float, optional): Absorbing factor for the potential. Default is 0.1.
+    Returns:
+    complex array-like: The calculated potential as a complex number.
+    """
+    return 1j * alpha * (1 - np.power(np.cos(np.pi * x/l), 1/8))
 
 class Hydrogen:
     def __init__(self, charge=1):
