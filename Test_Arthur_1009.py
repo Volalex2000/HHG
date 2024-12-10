@@ -22,13 +22,13 @@ from Solve import *
 from matplotlib.animation import FuncAnimation
 import matplotlib.cm as cm
 
-wavefunction, x, t = psi([-200, 4096, -10, 20000])
+wavefunction, x, t = psi([-200, 4096, -200, 300000])
 
 def coupure(p):
-    return np.exp(-(p/(2*l))**4)
+    return np.exp(-(p/(2*200))**4)
 
 fig, ax = plt.subplots()
-line, = ax.plot(x, np.log(abs(wavefunction[0])), color='k')
+line, = ax.plot(x, coupure(x)*abs(wavefunction[0])**2, color='k')
 ax.set_xlim(-200, 200)
 ax.set_ylim(0, np.max(abs(wavefunction)))
 ax.set_title("Evolution de la fonction d'onde")

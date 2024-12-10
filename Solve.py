@@ -181,6 +181,7 @@ def psi(set_x_t = None):
     crank.set_grid(x_min, x_max, nx, t_min, t_max, nt)
     X = crank.x_pts
     
+    
     def Potentiel_test(x):
         return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=10)
     
