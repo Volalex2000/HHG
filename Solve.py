@@ -162,8 +162,7 @@ def psi(set_x_t = None):
     # Def du potentiel 
     atom = Hydrogen()
     
-    def Potentiel_test(x):
-        return atom.potential(x)
+
     
     # Those will not change
     if set_x_t is None:
@@ -181,6 +180,9 @@ def psi(set_x_t = None):
     # Paramétrisation du solveur
     crank.set_grid(x_min, x_max, nx, t_min, t_max, nt)
     X = crank.x_pts
+    
+    def Potentiel_test(x):
+        return atom.potential(x) + abs_cos18_potential(x, x_max)
     
     def f(u, t):
         return Potentiel_test(X) * u - X * u * Field_test(t)
