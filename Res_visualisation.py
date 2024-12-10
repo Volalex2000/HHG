@@ -9,14 +9,18 @@ def __out_signal_calculation(x, wavefunction, potential, field):
     a = np.real(a + field)
     return a  # a. u.
 
-def __wavelet_transform(a, t, FW_frequency, t0=0, tau=620.35, max_harm_order=100, fast=False):
+def __wavelet_transform(a, t, FW_frequency, t0=0, tau=620.35, max_harm_order=100, fast=False, times=15):
     scales = FW_frequency * np.arange(1, max_harm_order)
 
     if fast:
-        X = scales[np.newaxis,np.newaxis,:] * (t[np.newaxis,:,np.newaxis] - t[:,np.newaxis,np.newaxis])
-        wavelet = np.sqrt(scales[np.newaxis,np.newaxis,:] / tau) * np.exp(-X**2 / (2 * tau**2) + 1j * X)
-        Int = a[:,np.newaxis,np.newaxis] * wavelet
-        A[i] = np.trapz(Int, t, axis=0)
+        it_step = int(len(t) / times)
+        A = np.zeros((len(t), len(scales)), dtype=complex)
+        for i in range(times):
+            idxs = np.arange(i*it_step, min((i+1)*it_step), len(t))
+            X = scales[np.newaxis,np.newaxis,:] * (t[np.newaxis,idxs,np.newaxis] - t[:,np.newaxis,np.newaxis])
+            wavelet = np.sqrt(scales[np.newaxis,np.newaxis,:] / tau) * np.exp(-X**2 / (2 * tau**2) + 1j * X)
+            Int = a[:,np.newaxis,np.newaxis] * wavelet
+            A[idxs] = np.trapz(Int, t, axis=0)
     else:
         A = np.zeros((len(t), len(scales)), dtype=complex)
         for i in range(len(t)):

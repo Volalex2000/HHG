@@ -10,7 +10,7 @@ def abs_cos18_potential(x, l, alpha=0.1):
     Returns:
     complex array-like: The calculated potential as a complex number.
     """
-    return 1j * alpha * (1 - np.power(np.cos(np.pi * x/l), 1/8))
+    return 1j * alpha * (1 - np.power(np.abs(np.cos(np.pi * x/l)), 1/8))
 
 class Hydrogen:
     def __init__(self, charge=1):
