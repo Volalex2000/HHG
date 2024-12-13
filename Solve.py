@@ -44,7 +44,7 @@ class CrankNicolson:
         delta_A = self.out_signal_calculation(t, psi)[:,np.newaxis] * wavelet * self.delta_t
         return delta_A
 
-    def solve(self, psi_init, for_A_data, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
+    def solve(self, psi_init, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
             
         sig = (1j * self.delta_t) / (4 * self.delta_x**2)
         
@@ -55,9 +55,9 @@ class CrankNicolson:
         self.psi_matrix = np.zeros([self.n_t, self.n_x], dtype=data_type)
 
         # Init fot A
-        FW = for_A_data[0]
-        max_harm_order = for_A_data[1]
-        self.tau = for_A_data[2]
+        FW = 0.057
+        max_harm_order = 100
+        self.tau = 620.4
         self.scales = FW * np.arange(1, max_harm_order)
         self.A = np.zeros([self.n_t, len(self.scales)], dtype=data_type)
 
