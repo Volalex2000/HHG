@@ -40,10 +40,9 @@ class CrankNicolson:
 
     def wavelet_trasform(self, t, psi):
         X = self.scales[np.newaxis,:] * (t - self.t_pts[:,np.newaxis])
-        wavelet = np.sqrt(self.scales[np.newaxis,:] / self.tau) * np.exp(-X**2 / (2 * tau**2) + 1j * X)
+        wavelet = np.sqrt(self.scales[np.newaxis,:] / self.tau) * np.exp(-X**2 / (2 * self.tau**2) + 1j * X)
         delta_A = self.out_signal_calculation(t, psi)[:,np.newaxis] * wavelet * self.delta_t
         return delta_A
-    
 
     def solve(self, psi_init, for_A_data, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
             
