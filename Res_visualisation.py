@@ -25,8 +25,8 @@ def plot_HH_spectrum(i, A, parameters):
     
     plt.figure()
     plt.plot(scales / FW, np.log2(np.abs(A[i,:])))
-    cutoff = cutoff(parameters[1], parameters[2])
-    plt.axvline(x = cutoff / FW, color='r', linestyle='--', label=f'Cutoff: {cutoff:.2f}')
+    Сutoff = cutoff(parameters[1], parameters[2])
+    plt.axvline(x = Сutoff / FW, color='r', linestyle='--', label=f'Cutoff: {cutoff:.2f}')
     plt.legend()
     plt.xlabel('Frequency, harmonic order')
     plt.ylabel('Log2(Amplitude)')
