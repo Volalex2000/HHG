@@ -264,10 +264,10 @@ def psi(set_x_t = None):
     crank.solve(psi_init)
 
     current_time = datetime.now()
-    np.save(f'./results/A_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.A)
-    np.save(f'./results/psi_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.psi_matrix)
-    np.save(f'./results/x_pts_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.x_pts)
-    np.save(f'./results/t_pts_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.t_pts)
+    np.save(f'results/A_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.A)
+    np.save(f'results/psi_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.psi_matrix)
+    np.save(f'results/x_pts_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.x_pts)
+    np.save(f'results/t_pts_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.t_pts)
     
     return crank.psi_matrix, crank.x_pts, crank.t_pts, crank.A
 
