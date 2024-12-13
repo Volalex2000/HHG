@@ -253,7 +253,7 @@ def psi(set_x_t = None):
     
     
     def Potentiel_test(x):
-        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=10)
+        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=0)
     
     def f(u, t):
         return Potentiel_test(X) * u - X * u * Field_test(t)
@@ -270,4 +270,6 @@ def psi(set_x_t = None):
     np.save(f'results/t_pts_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.t_pts)
     
     return crank.psi_matrix, crank.x_pts, crank.t_pts, crank.A
+
+
 
