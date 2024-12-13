@@ -22,7 +22,7 @@ from Solve import *
 from matplotlib.animation import FuncAnimation
 import matplotlib.cm as cm
 
-wavefunction, x, t = psi([-200, 4096, -200, 300000])
+wavefunction, x, t = psi([-200, 4096, -50, 200000])
 
 def coupure(p):
     return np.exp(-(p/(2*200))**4)
