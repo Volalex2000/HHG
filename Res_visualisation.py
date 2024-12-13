@@ -9,7 +9,7 @@ def cutoff(E, W, Z=1):
     Ip = Z**2 / 2  # for hydrogen-like atom
     return Ip + const * Up
 
-def plot_HH_spectrum(i, A, FW, scales, parameters):
+def plot_HH_spectrum(i, A, parameters):
     """
     Plots the High Harmonic (HH) spectrum of a given signal.
 
@@ -18,6 +18,11 @@ def plot_HH_spectrum(i, A, FW, scales, parameters):
     Returns:
         None: This function does not return any value. It generates a plot of the HH spectrum.
     """
+
+    FW = 0.057
+    max_harm_order = 100
+    scales = FW * np.arange(1, max_harm_order)
+    
     plt.figure()
     plt.plot(scales / FW, np.log2(np.abs(A[i,:])))
     cutoff = cutoff(parameters[1], parameters[2])
@@ -28,7 +33,7 @@ def plot_HH_spectrum(i, A, FW, scales, parameters):
     plt.title('HH Spectrum')
     plt.show()
 
-def imshow_time_frequency_characteristics(A, frequencies):
+def imshow_time_frequency_characteristics(A):
     """
     Display the time-frequency characteristics of a given signal using wavelet transform.
 
@@ -38,8 +43,14 @@ def imshow_time_frequency_characteristics(A, frequencies):
     Returns:
         None: This function does not return any value. It displays a plot of the time-frequency characteristics.
     """
+
+    FW = 0.057
+    max_harm_order = 100
+    tau = 620.4
+    scales = FW * np.arange(1, max_harm_order)
+
     plt.figure()
-    plt.imshow(np.log2(np.abs(A)), aspect='auto', extent=[0, len(A), np.min(frequencies), np.max(frequencies)])
+    plt.imshow(np.log2(np.abs(A)), aspect='auto', extent=[0, len(A), np.min(scales), np.max(scales)])
     plt.xlabel('Time, a. u.')
     plt.ylabel('Frequency, harmonic order')
     plt.title('Time-Frequency characteristics')

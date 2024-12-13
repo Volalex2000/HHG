@@ -19,6 +19,9 @@ from Hydrogen import *
 from Field import *
 from matplotlib.animation import FuncAnimation
 
+import jax
+import jax.numpy as jnp
+
 class CrankNicolson:
 
     
@@ -44,6 +47,45 @@ class CrankNicolson:
         delta_A = self.out_signal_calculation(t, psi)[:,np.newaxis] * wavelet * self.delta_t
         return delta_A
 
+    # @staticmethod
+    # @jax.jit
+    # def wavelet_trasform(t, psi, f, t_pts, x_pts):
+
+    #     FW = 0.057
+    #     max_harm_order = 100
+    #     tau = 620.4
+    #     scales = FW * np.arange(1, max_harm_order)
+    #     scales = jnp.asarray(scales)
+    #     t_pts = jnp.asarray(t_pts)
+    #     t = jnp.asarray(t)
+    #     psi = jnp.asarray(psi)
+
+    #     @jax.jit
+    #     def out_signal_calculation(t, psi, f, x_pts):
+    #         # Compute the gradient of f(1, t) with respect to x_pts
+    #         dV_dx = jax.grad(lambda x: f(1, x))(t)  # Using JAX's auto-diff
+
+    #         # Compute the integrand: -psi * dV_dx * conj(psi)
+    #         integrand = -psi * dV_dx * jnp.conj(psi)
+
+    #         # Trapezoidal integration over self.x_pts
+    #         dx = x_pts[1] - x_pts[0]  # Assuming uniform spacing
+    #         integral = jnp.sum(integrand, axis=-1) * dx
+
+    #         # Return the real part of the integral
+    #         return jnp.real(integral)
+
+    #     @jax.jit
+    #     # Define the wavelet function for one combination of t_pts and scales
+    #     def wavelet_element(t_pt, scale):
+    #         X = scale * (t - t_pt)
+    #         return jnp.sqrt(scale / tau) * jnp.exp(-X**2 / (2 * tau**2) + 1j * X) * out_signal_calculation(t, psi, f, x_pts)
+
+    #     # Vectorize across t_pts and scales
+    #     wavelet_vectorized = jax.vmap(jax.vmap(wavelet_element, in_axes=(None, 0)), in_axes=(0, None))
+    #     return np.array(wavelet_vectorized(t_pts, scales))
+
+
     def solve(self, psi_init, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
             
         sig = (1j * self.delta_t) / (4 * self.delta_x**2)
@@ -55,11 +97,9 @@ class CrankNicolson:
         self.psi_matrix = np.zeros([self.n_t, self.n_x], dtype=data_type)
 
         # Init fot A
-        FW = 0.057
+
         max_harm_order = 100
-        self.tau = 620.4
-        self.scales = FW * np.arange(1, max_harm_order)
-        self.A = np.zeros([self.n_t, len(self.scales)], dtype=data_type)
+        self.A = np.zeros([self.n_t, max_harm_order-1], dtype=data_type)
 
         # Using sparse matrices and specialized tridiagonal solver speeds up the calculations
         if sparse:
@@ -91,7 +131,7 @@ class CrankNicolson:
                 fpsi_old = fpsi
 
                 # Calculate A
-                self.A += self.wavelet_trasform(t, psi)
+                self.A += CrankNicolson.wavelet_trasform(t, psi, self.f, self.t_pts, self.x_pts)
 
         else:
             
@@ -122,7 +162,7 @@ class CrankNicolson:
                 fpsi_old = fpsi
 
                 # Calculate A
-                self.A += self.wavelet_trasform(t, psi)
+                self.A += CrankNicolson.wavelet_trasform(t, psi, self.f, self.t_pts, self.x_pts)
 
     def get_final_psi(self):
         
