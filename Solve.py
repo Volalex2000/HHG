@@ -104,7 +104,7 @@ class CrankNicolson:
         self.max_harm_order = 100
         self.tau = 620.4
         self.scales = self.FW * np.arange(1, self.max_harm_order, 2)
-        self.A = np.zeros([self.n_t, self.max_harm_order-1], dtype=data_type)
+        self.A = np.zeros([self.n_t, len(self.scales)], dtype=data_type)
 
         # Using sparse matrices and specialized tridiagonal solver speeds up the calculations
         if sparse:
