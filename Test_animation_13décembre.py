@@ -13,7 +13,7 @@ import matplotlib.cm as cm
 # Vérifiez si psi fonctionne
 print("Lancement de psi()")
 
-wavefunction, x, t, A = psi([-200, 4096, -50, 200000])
+wavefunction, x, t, A = psi([-200, 4096, -10, 50000])
 print("wavefunction shape:", np.shape(wavefunction))
 print("x shape:", np.shape(x))
 print("t shape:", np.shape(t))
