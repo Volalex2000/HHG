@@ -88,7 +88,7 @@ class CrankNicolson:
     #     return np.array(wavelet_vectorized(t_pts, scales))
 
 
-    def solve(self, psi_init, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
+    def solve(self, psi_init, test=True, sparse=True, boundary_conditions=('dirichlet','dirichlet')):
             
         sig = (1j * self.delta_t) / (4 * self.delta_x**2)
         
@@ -136,7 +136,8 @@ class CrankNicolson:
                 fpsi_old = fpsi
 
                 # Calculate A
-                self.A += self.wavelet_trasform(t, psi)
+                if not test:
+                    self.A += self.wavelet_trasform(t, psi)
                 #CrankNicolson.wavelet_trasform(t, psi, self.f, self.t_pts, self.x_pts)
                 self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
 
@@ -206,7 +207,7 @@ class CrankNicolson:
        
 
 
-def psi(set_x_t = None):
+def psi(set_x_t = None, test = True):
     """
     Solves the time-dependent Schrödinger equation for a given potential and field using the Crank-Nicolson method.
     Parameters:
@@ -264,7 +265,7 @@ def psi(set_x_t = None):
     crank.set_parameters(f)
     psi_init = atom.ground_state_wavefunction(X)
     
-    crank.solve(psi_init)
+    crank.solve(psi_init, test=test)
 
     current_time = datetime.now()
     np.save(f'results/A_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.A)
