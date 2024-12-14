@@ -170,7 +170,8 @@ class CrankNicolson:
                 fpsi_old = fpsi
 
                 # Calculate A
-                self.A += self.wavelet_trasform(t, psi)
+                if not test:
+                    self.A += self.wavelet_trasform(t, psi)
                 #CrankNicolson.wavelet_trasform(t, psi, self.f, self.t_pts, self.x_pts)
                 self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
 
