@@ -18,6 +18,7 @@ from Parameters import *
 from Hydrogen import *
 from Field import *
 from matplotlib.animation import FuncAnimation
+from tqdm import tqdm
 
 import jax
 import jax.numpy as jnp
@@ -125,7 +126,7 @@ class CrankNicolson:
                     
             # Propagate
             psi = psi_init
-            for n in range(self.n_t):
+            for n in tqdm(range(self.n_t)):
                 t = self.t_min + n*self.delta_t
                 self.psi_matrix[n,:] = psi
                 fpsi = self.f(psi,t)
