@@ -129,6 +129,7 @@ class CrankNicolson:
             for n in tqdm(range(self.n_t)):
                 t = self.t_min + n*self.delta_t
                 self.psi_matrix[n,:] = psi
+                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
                 fpsi = self.f(psi,t)
                 if n==0: fpsi_old = fpsi
                 psi = la.solve_banded((1,1),A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old),\
@@ -139,7 +140,7 @@ class CrankNicolson:
                 if not test:
                     self.A += self.wavelet_trasform(t, psi)
                 #CrankNicolson.wavelet_trasform(t, psi, self.f, self.t_pts, self.x_pts)
-                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
+                
 
         else:
             
@@ -164,6 +165,7 @@ class CrankNicolson:
             psi = psi_init
             for n in range(self.n_t):
                 self.psi_matrix[n,:] = psi
+                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
                 fpsi = self.f(psi,t)
                 if n==0: fpsi_old = fpsi
                 psi = la.solve(A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old))
@@ -173,7 +175,7 @@ class CrankNicolson:
                 if not test:
                     self.A += self.wavelet_trasform(t, psi)
                 #CrankNicolson.wavelet_trasform(t, psi, self.f, self.t_pts, self.x_pts)
-                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
+                
 
     def get_final_psi(self):
         
