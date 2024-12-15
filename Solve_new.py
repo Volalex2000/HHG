@@ -50,15 +50,14 @@ class CrankNicolson:
         return a
 
     def wavelet_trasform(self):
-        N = 20
+        N = 40
         a = self.out_signal_calculation(N)
         t = self.t_pts[::N]
         A = np.zeros((len(self.scales), len(t)), dtype=complex)
 
         for i in tqdm(range(len(self.scales)), desc="Wavelet Transform", position=1, leave=True):
             X = self.scales[i] * (t[np.newaxis,:] - t[:,np.newaxis])
-            wavelet = np.sqrt(self.scales[i] / self.tau) * np.exp(-X**2 / (2 * self.tau**2) + 1j * X)
-            Int = a[:,np.newaxis] * wavelet
+            Int = a[:,np.newaxis] * np.sqrt(self.scales[i] / self.tau) * np.exp(-X**2 / (2 * self.tau**2) + 1j * X)
             A[i,:] = np.trapz(Int, t, axis=0)
         
         return A
@@ -240,7 +239,7 @@ def psi_new(set_x_t = None, n_of_exp = 0):
 
     current_time = datetime.now()
     np.save(f'results/A_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.A)
-    np.save(f'results/psi_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.psi_matrix)
+    # np.save(f'results/psi_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.psi_matrix)
     # np.save(f'results/x_pts_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.x_pts)
     # np.save(f'results/t_pts_{current_time.strftime("%Y-%m-%d_%H-%M-%S")}.npy', crank.t_pts)
     
