@@ -1,7 +1,3 @@
-Here is the **README.md** file content for your set of files, written in Markdown format:
-
----
-
 # **High-Harmonic Generation (HHG) Simulation**
 
 This repository contains a numerical simulation of **High-Harmonic Generation (HHG)** in the extreme ultraviolet domain using the **Time-Dependent Schrödinger Equation (TDSE)** and wavelet analysis for time-frequency characteristics.
@@ -111,7 +107,3 @@ imshow_time_frequency_characteristics(A)
 For questions or collaboration, contact:  
 **Arthur Gontier** - [arthur.gontier@polytechnique.edu](mailto:arthur.gontier@polytechnique.edu)
 **Aleksandr Volkov** - [aleksandr.volkov@polytechnique.edu](mailto:aleksandr.volkov@polytechnique.edu)
-
----
-
-Let me know if you'd like further refinements!
