@@ -198,15 +198,16 @@ def psi_new(set_x_t = None, n_of_exp = 0):
     
     # Def du champ laser simple
     param_single_pulse = pars_YanPengPhysRevA_78_033821()[n_of_exp]
-    Field_single_pulse = Field.Pulse(param_single_pulse)
+    if n_of_exp == 0:
+        Field_single_pulse = Field.Pulse(param_single_pulse)
+    else:
+        Field_single_pulse = Field.MultiPulse(param_single_pulse)
     
     def Field_test(t):
         return Field_single_pulse(t, 'Real')
     
     # Def du potentiel 
     atom = Hydrogen()
-    
-
     
     # Those will not change
     if set_x_t is None:
