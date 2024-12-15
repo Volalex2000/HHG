@@ -38,8 +38,6 @@ To run this project, install the following Python libraries:
 pip install numpy matplotlib scipy tqdm
 ```
 
-Optional: Run on **Google Colab** for GPU acceleration.
-
 ---
 
 ## **Usage**
@@ -98,7 +96,7 @@ imshow_time_frequency_characteristics(A)
 1. Yan Peng et al., *"Pulse shaping to generate an XUV supercontinuum in the high-order harmonic plateau region"*  
    [Phys. Rev. A 78, 033821 (2008)].
 
-2. Numerical methods inspired by: *"Quantum Mechanics of Strong-Field Interactions"*.
+2. Numerical methods inspired by: *"PHY_51171_EP - Physique Numérique (2024-2025)"*.
 
 ---
 
