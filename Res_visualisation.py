@@ -20,7 +20,7 @@ def plot_HH_spectrum(i, A, parameters):
     """
 
     FW = 0.057
-    max_harm_order = 100
+    max_harm_order = 120
     scales = FW * np.arange(1, max_harm_order,2)
     
     plt.figure()
@@ -44,7 +44,7 @@ def imshow_time_frequency_characteristics(A):
     """
 
     FW = 0.057
-    max_harm_order = 100
+    max_harm_order = 120
     scales = FW * np.arange(1, max_harm_order, 2)
 
     plt.figure()

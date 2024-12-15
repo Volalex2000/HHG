@@ -69,7 +69,8 @@ class Field:
             phases (list): The phases of the pulses.
             """
 
-            self.pulses = [Field.Pulse(params) for params in parameters]
+            self.pulses = [Field.Pulse(parameters[0,i], parameters[1,i],
+                                        parameters[2,i], parameters[3,i]) for i in range(len(parameters[0]))]
         
         def __call__(self, time, Type='Real'):
             """

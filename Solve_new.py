@@ -50,7 +50,7 @@ class CrankNicolson:
         return a
 
     def wavelet_trasform(self):
-        N = 100
+        N = 20
         a = self.out_signal_calculation(N)
         t = self.t_pts[::N]
         A = np.zeros((len(self.scales), len(t)), dtype=complex)
@@ -76,7 +76,7 @@ class CrankNicolson:
         # Init fot A
 
         self.FW = 0.057
-        self.max_harm_order = 100
+        self.max_harm_order = 120
         self.tau = 620.4
         self.scales = self.FW * np.arange(1, self.max_harm_order, 2)
         self.A = np.zeros([self.n_t, len(self.scales)], dtype=data_type)
@@ -177,7 +177,7 @@ class CrankNicolson:
        
 
 
-def psi_new(set_x_t = None):
+def psi_new(set_x_t = None, n_of_exp = 0):
     """
     Solves the time-dependent Schrödinger equation for a given potential and field using the Crank-Nicolson method.
     Parameters:
@@ -197,7 +197,7 @@ def psi_new(set_x_t = None):
     crank = CrankNicolson()
     
     # Def du champ laser simple
-    param_single_pulse = pars_YanPengPhysRevA_78_033821()[0]
+    param_single_pulse = pars_YanPengPhysRevA_78_033821()[n_of_exp]
     Field_single_pulse = Field.Pulse(param_single_pulse)
     
     def Field_test(t):
