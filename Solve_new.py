@@ -35,22 +35,23 @@ class CrankNicolson:
     def set_parameters(self, f):
         self.f = f
 
-    def out_signal_calculation(self, n):
+    def out_signal_calculation(self, N):
         def F(t): return self.f(1, t)
         F_v = np.vectorize(F, signature='()->(n)')
         n = len(self.x_pts)
         xa = self.x_pts[n//2 - n//8 : n//2 + n//8]
-        V = F_v(self.t_pts)[::n, n//2 - n//8 : n//2 + n//8]
+        V = F_v(self.t_pts)[::N, n//2 - n//8 : n//2 + n//8]
         dV_dx = np.gradient(V, xa, axis=1)
-        ps = self.psi_matrix[::n, n//2 - n//8 : n//2 + n//8]
+        ps = self.psi_matrix[::N, n//2 - n//8 : n//2 + n//8]
         a = np.trapz(-ps * dV_dx * np.conj(ps), xa, axis=1)
         a = np.real(a)
+        print(a.shape)
         return a
 
     def wavelet_trasform(self):
-        n = 10
-        a = self.out_signal_calculation(n)
-        t = self.t_pts[::n]
+        N = 10
+        a = self.out_signal_calculation(N)
+        t = self.t_pts[::N]
         A = np.zeros((len(self.scales), len(t)), dtype=complex)
 
         for i in tqdm(range(len(self.scales)), desc="Wavelet Transform", position=1, leave=True):
@@ -102,7 +103,7 @@ class CrankNicolson:
             for n in tqdm(range(self.n_t), desc="Time Propagation", position=0, leave=True):
                 t = self.t_min + n*self.delta_t
                 self.psi_matrix[n,:] = psi
-                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
+                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(100))**4)
                 fpsi = self.f(psi,t)
                 if n==0: fpsi_old = fpsi
                 psi = la.solve_banded((1,1),A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old),\
@@ -133,7 +134,7 @@ class CrankNicolson:
             psi = psi_init
             for n in tqdm(range(self.n_t), desc="Time Propagation", position=0, leave=True):
                 self.psi_matrix[n,:] = psi
-                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
+                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(100))**4)
                 fpsi = self.f(psi,t)
                 if n==0: fpsi_old = fpsi
                 psi = la.solve(A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old))
@@ -225,7 +226,7 @@ def psi_new(set_x_t = None, test = True):
     
     
     def Potentiel_test(x):
-        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=0)
+        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=50)
     
     def f(u, t):
         return Potentiel_test(X) * u - X * u * Field_test(t)
