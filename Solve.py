@@ -165,7 +165,7 @@ class CrankNicolson:
             psi = psi_init
             for n in range(self.n_t):
                 self.psi_matrix[n,:] = psi
-                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
+                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**8)
                 fpsi = self.f(psi,t)
                 if n==0: fpsi_old = fpsi
                 psi = la.solve(A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old))
