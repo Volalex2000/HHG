@@ -77,7 +77,7 @@ class CrankNicolson:
         self.FW = 0.057
         self.max_harm_order = 120
         self.tau = 620.4
-        self.scales = self.FW * np.arange(1, self.max_harm_order, 1)
+        self.scales = self.FW * np.arange(1, self.max_harm_order, 0.5)
         self.A = np.zeros([self.n_t, len(self.scales)], dtype=data_type)
 
         # Using sparse matrices and specialized tridiagonal solver speeds up the calculations
@@ -134,7 +134,7 @@ class CrankNicolson:
             psi = psi_init
             for n in tqdm(range(self.n_t), desc="Time Propagation", position=0, leave=True):
                 self.psi_matrix[n,:] = psi
-                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(100))**4)
+                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(100))**8)
                 fpsi = self.f(psi,t)
                 if n==0: fpsi_old = fpsi
                 psi = la.solve(A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old))
@@ -227,7 +227,7 @@ def psi_new(set_x_t = None, n_of_exp = 0):
     
     
     def Potentiel_test(x):
-        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=50)
+        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=40)
     
     def f(u, t):
         return Potentiel_test(X) * u - X * u * Field_test(t)

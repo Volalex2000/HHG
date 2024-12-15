@@ -21,7 +21,7 @@ def plot_HH_spectrum(i, A, parameters):
 
     FW = 0.057
     max_harm_order = 120
-    scales = FW * np.arange(1, max_harm_order,1)
+    scales = FW * np.arange(1, max_harm_order,0.5)
     
     plt.figure()
     plt.plot(scales / FW, np.log2(np.abs(A[:,i])))
@@ -45,7 +45,7 @@ def imshow_time_frequency_characteristics(A):
 
     FW = 0.057
     max_harm_order = 120
-    scales = FW * np.arange(1, max_harm_order, 1)
+    scales = FW * np.arange(1, max_harm_order, 0.5)
 
     plt.figure()
     plt.imshow(np.log2(np.abs(A)), aspect='auto', extent=[0, len(A), np.min(scales), np.max(scales)])
