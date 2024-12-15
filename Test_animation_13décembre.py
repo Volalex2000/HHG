@@ -13,7 +13,7 @@ import matplotlib.cm as cm
 # Vérifiez si psi fonctionne
 print("Lancement de psi()")
 
-wavefunction, x, t, A = psi([-200, 4096, -10, 50000])
+wavefunction, x, t, A = psi([-200, 4096, -10, 100000])
 print("wavefunction shape:", np.shape(wavefunction))
 print("x shape:", np.shape(x))
 print("t shape:", np.shape(t))
@@ -21,7 +21,7 @@ print("t shape:", np.shape(t))
 fig, ax = plt.subplots()
 print("Checkpoint: plt.subplots() OK")
 line, = ax.plot(x, abs(wavefunction[0]), color='k')
-ax.set_xlim(-200, 200)
+ax.set_xlim(-20, 20)
 ax.set_ylim(0, np.max(abs(wavefunction)))
 ax.set_title("Evolution de la fonction d'onde")
 
@@ -34,5 +34,5 @@ def update(frame):
     return line,
 
 
-ani = FuncAnimation(fig, update, frames=range(len(t)), blit=True, interval=50)
+ani = FuncAnimation(fig, update, frames=range(len(t)), blit=True, interval=100)
 plt.show()

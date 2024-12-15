@@ -129,7 +129,7 @@ class CrankNicolson:
             for n in tqdm(range(self.n_t)):
                 t = self.t_min + n*self.delta_t
                 self.psi_matrix[n,:] = psi
-                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**4)
+                self.psi_matrix[n,:]*= np.exp(-(self.x_pts/(2*200))**8)
                 fpsi = self.f(psi,t)
                 if n==0: fpsi_old = fpsi
                 psi = la.solve_banded((1,1),A, B.dot(psi) - 1j*self.delta_t * (1.5 * fpsi - 0.5 * fpsi_old),\
@@ -260,7 +260,7 @@ def psi(set_x_t = None, test = True):
     
     
     def Potentiel_test(x):
-        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=10)
+        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=1)
     
     def f(u, t):
         return Potentiel_test(X) * u - X * u * Field_test(t)
