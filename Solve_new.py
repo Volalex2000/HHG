@@ -35,21 +35,22 @@ class CrankNicolson:
     def set_parameters(self, f):
         self.f = f
 
-    def out_signal_calculation(self):
+    def out_signal_calculation(self, n):
         def F(t): return self.f(1, t)
         F_v = np.vectorize(F, signature='()->(n)')
         n = len(self.x_pts)
         xa = self.x_pts[n//2 - n//8 : n//2 + n//8]
-        V = F_v(self.t_pts)[:, n//2 - n//8 : n//2 + n//8]
+        V = F_v(self.t_pts)[::n, n//2 - n//8 : n//2 + n//8]
         dV_dx = np.gradient(V, xa, axis=1)
-        ps = self.psi_matrix[:, n//2 - n//8 : n//2 + n//8]
+        ps = self.psi_matrix[::n, n//2 - n//8 : n//2 + n//8]
         a = np.trapz(-ps * dV_dx * np.conj(ps), xa, axis=1)
         a = np.real(a)
         return a
 
     def wavelet_trasform(self):
-        a = self.out_signal_calculation()
-        t = self.t_pts
+        n = 10
+        a = self.out_signal_calculation(n)
+        t = self.t_pts[::n]
         A = np.zeros((len(self.scales), len(t)), dtype=complex)
 
         for i in tqdm(range(len(self.scales)), desc="Wavelet Transform", position=1, leave=True):
