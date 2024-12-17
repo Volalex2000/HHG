@@ -68,7 +68,7 @@ class CrankNicolson:
 
         # Initialize parameters for wavelet transform
         self.FW = 0.057
-        self.max_harm_order = 120
+        self.max_harm_order = 140
         self.tau = 620.4
         self.scales = self.FW * np.arange(1, self.max_harm_order, 0.5)
         self.A = np.zeros([self.n_t, len(self.scales)], dtype=data_type)
@@ -203,7 +203,7 @@ def psi(set_x_t=None, n_of_exp=0):
     X = crank.x_pts
     
     def Potentiel_test(x):
-        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=40)
+        return atom.potential(x) + abs_cos18_potential(x, x_max, alpha=150)
     
     def f(u, t):
         return Potentiel_test(X) * u - X * u * Field_test(t)

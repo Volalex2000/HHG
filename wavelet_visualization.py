@@ -31,7 +31,7 @@ def plot_HH_spectrum(i, A, parameters):
         None: This function does not return any value. It generates a plot of the HH spectrum.
     """
     FW = 0.057
-    max_harm_order = 120
+    max_harm_order = 140
     scales = FW * np.arange(1, max_harm_order, 0.5)
     
     plt.figure()
@@ -54,7 +54,7 @@ def imshow_time_frequency_characteristics(A):
         None: This function does not return any value. It displays a plot of the time-frequency characteristics.
     """
     FW = 0.057
-    max_harm_order = 120
+    max_harm_order = 140
     scales = FW * np.arange(1, max_harm_order, 0.5)
 
     plt.figure()
